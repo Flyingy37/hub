@@ -194,6 +194,7 @@ show_section = st.sidebar.radio(
 # 4. Title
 # =========================================================
 st.title("Sephora Recommendation Analysis")
+st.markdown('<div id="insights-from-926-423-verified-customer-reviews"></div>', unsafe_allow_html=True)
 st.subheader("Insights from 926,423 Verified Customer Reviews")
 
 st.markdown("---")
