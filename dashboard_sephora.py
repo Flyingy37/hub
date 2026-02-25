@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+import kagglehub
+import os
 
 # =========================================================
 # 1. Page Configuration & Styling
@@ -85,6 +87,8 @@ st.markdown("""
 # =========================================================
 @st.cache_data(show_spinner=True)
 def load_reviews_and_products():
+    path = kagglehub.dataset_download("nadyinky/sephora-products-and-skincare-reviews")
+
     reviews_files = [
         'reviews_0-250.csv',
         'reviews_250-500.csv',
@@ -95,12 +99,12 @@ def load_reviews_and_products():
 
     reviews_parts = []
     for fp in reviews_files:
-        part = pd.read_csv(fp)
+        part = pd.read_csv(os.path.join(path, fp))
         part['source_file'] = fp
         reviews_parts.append(part)
 
     reviews_df = pd.concat(reviews_parts, ignore_index=True)
-    product_df = pd.read_csv('product_info.csv')
+    product_df = pd.read_csv(os.path.join(path, 'product_info.csv'))
 
     # Type cleaning
     for col in ['price_usd', 'rating', 'is_recommended']:
@@ -200,8 +204,8 @@ st.markdown("---")
 if show_section == "Overview":
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Reviews", f"{TOTAL_REVIEWS:,}")
-    col2.metric("Recommendation Rate", f"{REC_RATE}%")
-    col3.metric("Average Rating", f"{AVG_RATING}")
+    col2.metric("Recommendation Rate", f"{REC_RATE:.2f}%")
+    col3.metric("Average Rating", f"{AVG_RATING:.2f}")
 
     st.markdown("---")
 
@@ -406,7 +410,7 @@ st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: gray; font-size: 12px;">
 <p>Based on analysis of 926,423 real Sephora reviews</p>
-<p>Data from Kaggle: nadyinky/sephora-products-and-skincare-reviews</p>
-<p>Created February 2025</p>
+<p>Data from <a href="https://www.kaggle.com/datasets/nadyinky/sephora-products-and-skincare-reviews" target="_blank">Kaggle: nadyinky/sephora-products-and-skincare-reviews</a></p>
+<p>Created April 2026</p>
 </div>
 """, unsafe_allow_html=True)
